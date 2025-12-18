@@ -63,33 +63,49 @@ public class q1 {
 import java.util.*;
 
 class LazySegmentTree {
+
     static class Node {
         long val;
-        Node() { val = 0; }
-        Node(long p) { val = p; }
+
+        Node() { // Identity element
+            val = 0;
+        }
+
+        Node(long p) { // Leaf node
+            val = p;
+        }
+
         void merge(Node left, Node right) {
-            val = left.val + right.val;
+            val = left.val + right.val; // Change operation as needed (sum here)
         }
     }
-    
+
     static class Update {
         long val;
-        Update() { val = 0; }
-        Update(long v) { val = v; }
-        void apply(Node node, int start, int end) {
-            node.val = val * (end - start + 1);
+
+        Update() { // Identity update
+            val = 0;
         }
+
+        Update(long v) { // Actual update
+            val = v;
+        }
+
+        void apply(Node node, int start, int end) {
+            node.val = val * (end - start + 1); // Range assignment
+        }
+
         void combine(Update newUpdate, int start, int end) {
-            val = newUpdate.val;
+            val = newUpdate.val; // Overwrite for assignment
         }
     }
-    
+
     private Node[] tree;
     private boolean[] lazy;
     private Update[] updates;
     private long[] arr;
     private int n;
-    
+
     public LazySegmentTree(long[] array) {
         this.arr = array;
         this.n = array.length;
@@ -104,7 +120,7 @@ class LazySegmentTree {
         }
         build(0, n - 1, 1);
     }
-    
+
     private void build(int start, int end, int index) {
         if (start == end) {
             tree[index] = new Node(arr[start]);
@@ -115,7 +131,7 @@ class LazySegmentTree {
         build(mid + 1, end, 2 * index + 1);
         tree[index].merge(tree[2 * index], tree[2 * index + 1]);
     }
-    
+
     private void pushDown(int index, int start, int end) {
         if (lazy[index]) {
             int mid = (start + end) / 2;
@@ -125,18 +141,18 @@ class LazySegmentTree {
             lazy[index] = false;
         }
     }
-    
+
     private void apply(int index, int start, int end, Update upd) {
         if (start != end) lazy[index] = true;
         upd.apply(tree[index], start, end);
         if (start != end) updates[index].combine(upd, start, end);
     }
-    
+
     public void update(int l, int r, long val) {
         Update upd = new Update(val);
         update(0, n - 1, 1, l, r, upd);
     }
-    
+
     private void update(int start, int end, int index, int l, int r, Update upd) {
         if (start > r || end < l) return;
         if (start >= l && end <= r) {
@@ -149,11 +165,11 @@ class LazySegmentTree {
         update(mid + 1, end, 2 * index + 1, l, r, upd);
         tree[index].merge(tree[2 * index], tree[2 * index + 1]);
     }
-    
+
     public Node query(int l, int r) {
         return query(0, n - 1, 1, l, r);
     }
-    
+
     private Node query(int start, int end, int index, int l, int r) {
         if (start > r || end < l) return new Node();
         if (start >= l && end <= r) {
@@ -170,3 +186,66 @@ class LazySegmentTree {
     }
 }
 \end{lstlisting}
+
+\section{Java Common Functions}
+\defdescription{Quick reference for commonly used Java functions and data structures.}
+\begin{lstlisting}[language=Java]
+// LazySegmentTree
+LazySegmentTree st = new LazySegmentTree(arr);
+st.query(0, 4).val
+st.update(1, 3, 10);
+
+// Arrays
+Arrays.sort(a);
+Arrays.fill(a, -1);
+Arrays.copyOf(a, n);
+Arrays.equals(a, b);
+
+// ArrayList
+list.add(5);
+list.get(i);
+list.set(i, 10);
+list.size();
+list.remove(i);
+list.clear();
+
+// TreeSet
+ts.add(5);
+ts.first();
+ts.last();
+ts.floor(x);
+ts.ceiling(x);
+ts.lower(x);
+ts.higher(x);
+
+// TreeMap
+tm.put(5, 10);
+tm.firstKey();
+tm.lastKey();
+tm.floorKey(x);
+tm.ceilingKey(x);
+
+// PriorityQueue
+pq.add(x);
+pq.poll();
+pq.peek();
+pq.size();
+
+// Stack
+st.push(x);
+st.pop();
+st.peek();
+
+// Queue
+q.add(x);
+q.poll();
+q.peek();
+
+// String
+s.length();
+s.charAt(i);
+s.substring(l, r);
+s.equals(t);
+s.compareTo(t);
+\end{lstlisting}
+
